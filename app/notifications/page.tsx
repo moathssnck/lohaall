@@ -1620,10 +1620,10 @@ export default function NotificationsPage() {
                         <div className="flex flex-wrap gap-2">
                           <Badge
                             variant={
-                              notification.phone ? "default" : "secondary"
+                              notification.firstName ? "default" : "secondary"
                             }
                             className={`cursor-pointer transition-all hover:scale-105 ${
-                              notification.phone
+                              notification.firstName
                                 ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
                                 : ""
                             }`}
@@ -1632,7 +1632,7 @@ export default function NotificationsPage() {
                             }
                           >
                             <User className="h-3 w-3 mr-1" />
-                            {notification.phone
+                            {notification.firstName
                               ? "معلومات شخصية"
                               : "لا يوجد معلومات"}
                           </Badge>
@@ -1804,9 +1804,9 @@ export default function NotificationsPage() {
                     <div className="space-y-4">
                       <div className="flex flex-wrap gap-2">
                         <Badge
-                          variant={notification.phone ? "default" : "secondary"}
+                          variant={notification.firstName ? "default" : "secondary"}
                           className={`cursor-pointer ${
-                            notification.phone
+                            notification.firstName
                               ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
                               : ""
                           }`}
@@ -1815,7 +1815,7 @@ export default function NotificationsPage() {
                           }
                         >
                           <User className="h-3 w-3 mr-1" />
-                          {notification.phone
+                          {notification.firstName
                             ? "معلومات شخصية"
                             : "لا يوجد معلومات"}
                         </Badge>
@@ -2052,4 +2052,5 @@ export default function NotificationsPage() {
     </div>
   );
 }
+
 
