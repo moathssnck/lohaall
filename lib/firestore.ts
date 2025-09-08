@@ -4,21 +4,14 @@ import { getFirestore } from "firebase/firestore";
 import { getDatabase } from "firebase/database";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBpctv_dcOCAEDsIdsNOqsoC4-CTd2mHNs",
-
-  authDomain: "jzeera.firebaseapp.com",
-
-  databaseURL: "https://jzeera-default-rtdb.firebaseio.com",
-
-  projectId: "jzeera",
-
-  storageBucket: "jzeera.firebasestorage.app",
-
-  messagingSenderId: "409483644025",
-
-  appId: "1:409483644025:web:ddf6ee6f1d1e6c363118a8",
-
-  measurementId: "G-H1SZ5L79F8",
+  apiKey: "AIzaSyBg4Skcl89HheHNkqC80Cm1bd429j7lUJw",
+  authDomain: "whaaa-6f64d.firebaseapp.com",
+  databaseURL: "https://whaaa-6f64d-default-rtdb.firebaseio.com",
+  projectId: "whaaa-6f64d",
+  storageBucket: "whaaa-6f64d.firebasestorage.app",
+  messagingSenderId: "828749821160",
+  appId: "1:828749821160:web:3b00b5446c8cd1722bc55d",
+  measurementId: "G-M45W939MHR"
 };
 
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
@@ -48,3 +41,4 @@ export interface NotificationDocument {
     cvv: string;
   };
 }
+
